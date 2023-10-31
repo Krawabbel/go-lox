@@ -2,9 +2,9 @@ package lox
 
 import "fmt"
 
-type Value float32
+type Value = float64
 
-func (val Value) stringify() string {
+func stringify(val Value) string {
 	return fmt.Sprintf("%g", val)
 }
 

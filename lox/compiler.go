@@ -1,24 +1,26 @@
 package lox
 
-import "fmt"
+func compile(src string) (*Chunk, bool) {
 
-func compile(src string) error {
-	var scanner = NewScanner(src)
-	var line = -1
-	for {
-		var token = scanner.scan_token()
-		if token.line != line {
-			print(fmt.Sprintf("%4d ", token.line))
-			line = token.line
-		} else {
-			print("   | ")
-		}
-		print(fmt.Sprintf("%2d '%.*s' \n", token.typ, len(token.lexeme), token.lexeme))
+	var parser Parser
 
-		if token.typ == TOKEN_EOF {
-			break
-		}
+	parser.scanner = MakeScanner(src)
+
+	// parser.had_error = false
+	// parser.is_in_panic_mode = false
+
+	parser.step()
+
+	parser.parse_expression()
+
+	parser.consume(TOKEN_EOF, "expected end of expression")
+
+	parser.end_compiler()
+
+	if DEBUG_PRINT_CODE && !parser.had_error {
+		disassemble_chunk(*parser.current_chunk(), "code")
 	}
 
-	return nil
+	return nil, !parser.had_error
+
 }

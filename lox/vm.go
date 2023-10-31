@@ -16,12 +16,15 @@ type VM struct {
 
 func (vm *VM) interpret(src string) int {
 
-	if err := compile(src); err != nil {
-		print("%v\n", err)
+	var chunk, success = compile(src)
+	if !success {
 		return INTERPRET_COMPILE_ERROR
 	}
 
-	return INTERPRET_OK
+	vm.chunk = chunk
+	vm.ip = 0
+
+	return vm.run()
 }
 
 func (vm *VM) next_code() byte {
@@ -97,7 +100,7 @@ func (vm *VM) run() int {
 			if err != nil {
 				return INTERPRET_RUNTIME_ERROR
 			}
-			print("%s\n", addr.stringify())
+			print("%s\n", stringify(addr))
 			return INTERPRET_OK
 
 		default:

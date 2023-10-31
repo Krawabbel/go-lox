@@ -49,7 +49,7 @@ const (
 )
 
 type Token struct {
-	typ    int
+	spec   int
 	lexeme string
 	line   int
 }

@@ -8,7 +8,7 @@ import (
 
 func RunREPL() error {
 
-	var input = bufio.NewScanner(INPUT)
+	var input = bufio.NewScanner(STDIN)
 
 	var vm = new(VM)
 	for print("> "); input.Scan(); print("> ") {
@@ -22,7 +22,7 @@ func RunREPL() error {
 	return nil
 }
 
-func RunFile(path string) error {
+func RunScript(path string) error {
 
 	src, err := os.ReadFile(path)
 	if err != nil {

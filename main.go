@@ -20,12 +20,12 @@ func main() {
 
 		arg := os.Args[1]
 
-		if err := lox.RunFile(arg); err != nil {
+		if err := lox.RunScript(arg); err != nil {
 			panic(err)
 		}
 
 	default:
-		fmt.Println("usage: lox [path]")
+		fmt.Println("usage: lox [path/to/script.lox]")
 
 	}
 

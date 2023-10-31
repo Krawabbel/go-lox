@@ -32,6 +32,10 @@ Some notable peculiarities:
 * All numbers are 32-bit floats.
 * All statements in if-else-clauses, for- and while-loops must be surrounded by curly braces ('{' and '}'). 
 
+### Hello World
+
+```print "Hello, World";```
+
 ### Key Words (reserved)
 
 * and
@@ -50,10 +54,6 @@ Some notable peculiarities:
 * true
 * var
 * while
-
-### Hello World
-
-```print "Hello, World";```
 
 ## Resources
 

@@ -47,9 +47,10 @@ func TestLox(t *testing.T) {
 func test_helper(path string, info os.FileInfo) error {
 
 	var w = new(test_writer)
-	lox.OUTPUT = w
+	lox.STDOUT = w
+	lox.STDERR = w
 
-	lox.RunFile(path)
+	lox.RunScript(path)
 
 	var got = w.data
 

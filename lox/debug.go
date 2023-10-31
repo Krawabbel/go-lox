@@ -3,6 +3,7 @@ package lox
 import "fmt"
 
 var DEBUG_TRACE_EXECUTION = true
+var DEBUG_PRINT_CODE = true
 
 func debug(msg string) {
 	fmt.Println(msg)
@@ -72,5 +73,5 @@ func constant_instruction(name string, chunk Chunk, code_addr int) (string, int)
 	addr := chunk.code[code_addr]
 	val := chunk.constants.values[addr]
 
-	return fmt.Sprintf("%-16s (%04d) %s", name, addr, val.stringify()), 2
+	return fmt.Sprintf("%-16s (%04d) %s", name, addr, stringify(val)), 2
 }

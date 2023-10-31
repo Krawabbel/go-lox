@@ -1,14 +1,10 @@
 package lox
 
 import (
-	"fmt"
 	"io"
 	"os"
 )
 
-var OUTPUT io.Writer = os.Stdout
-var INPUT io.Reader = os.Stdin
-
-func print(format string, a ...any) {
-	fmt.Fprintf(OUTPUT, format, a...)
-}
+var STDOUT io.Writer = os.Stdout
+var STDIN io.Reader = os.Stdin
+var STDERR io.Writer = os.Stderr
