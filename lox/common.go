@@ -9,10 +9,6 @@ import (
 var OUTPUT io.Writer = os.Stdout
 var INPUT io.Reader = os.Stdin
 
-func print_ln(msg string) {
-	fmt.Fprintln(OUTPUT, msg)
-}
-
-func print(msg string) {
-	fmt.Fprint(OUTPUT, msg)
+func print(format string, a ...any) {
+	fmt.Fprintf(OUTPUT, format, a...)
 }

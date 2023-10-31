@@ -17,7 +17,7 @@ type VM struct {
 func (vm *VM) interpret(src string) int {
 
 	if err := compile(src); err != nil {
-		print_ln(err.Error())
+		print("%v\n", err)
 		return INTERPRET_COMPILE_ERROR
 	}
 
@@ -97,7 +97,7 @@ func (vm *VM) run() int {
 			if err != nil {
 				return INTERPRET_RUNTIME_ERROR
 			}
-			print_ln(addr.stringify())
+			print("%s\n", addr.stringify())
 			return INTERPRET_OK
 
 		default:
