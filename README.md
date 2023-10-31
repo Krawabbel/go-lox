@@ -7,19 +7,53 @@ a byte-code Lox interpreter written in Go (Golang)
 
 The Lox interpreter found in this repository is an adaptation of the bytecode VM (C-)implementation proposed by Robert Nystrom in his highly recommended book 'Crafting Interpreters'.
 
-## Lox Cheat Sheet
+## Build and Run
 
-Lox is a programming language in the tradition of C. Its (limited) core features include
+* Clone the repository, e.g. with ```git clone https://github.com/Krawabbel/go-lox.git``` or simply download it [here](https://github.com/Krawabbel/go-lox/archive/refs/heads/main.zip).
 
-* ...
-
-### Hello World
-
-```print "Hello, World"```
+* Build go-lox with ```go build```.
 
 ## Run Lox Programs
 
-ToDo
+This interpreter features a REPL (read-evaluate-print-loop) and script-runner which can be run by running
+
+Linux and Mac: ```./go-lox ["path/to/script.lox"]```
+
+Windows: ```./go-lox ["path/to/script.lox"]```
+
+If no path to a script is provided, the REPL will be started.
+
+## Lox Cheat Sheet
+
+Lox is a minimalistic programming language in the tradition of C.
+
+Some notable peculiarities:
+* All statements must be terminated by a ';'.
+* All numbers are 32-bit floats.
+* All statements in if-else-clauses, for- and while-loops must be surrounded by curly braces ('{' and '}'). 
+
+### Key Words (reserved)
+
+* and
+* class
+* else 
+* false
+* for
+* fun 
+* if
+* nil
+* or
+* print
+* return
+* super
+* this
+* true
+* var
+* while
+
+### Hello World
+
+```print "Hello, World";```
 
 ## Resources
 
