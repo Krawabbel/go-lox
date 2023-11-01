@@ -1,10 +1,1 @@
-== test chunk ==
-0000  123 OP_CONSTANT      (0000) 1.2
-0002    | OP_CONSTANT      (0001) 3.4
-0004    | OP_ADD
-0005    | OP_CONSTANT      (0002) 5.6
-0007    | OP_DIVIDE
-0008    | OP_NEGATE
-0009    | OP_RETURN
-
--0.82142866
+[line 1] error at 'fun': expect expression
