@@ -1,99 +1,101 @@
 package lox
 
-import "fmt"
+import (
+	"fmt"
+)
 
 const (
 	VAL_NIL = iota
 	VAL_BOOL
 	VAL_NUMBER
+	VAL_OBJ
+	VAL_UNKNOWN
 )
 
 type Value interface {
-	as_string() string
-	as_number() NumberValue
-	as_bool() bool
-
-	get_type() int
+	stringify() string
 }
 
-func has_type(val Value, t int) bool {
-	return val.get_type() == t
+func get_type(val Value) int {
+	switch val.(type) {
+	case NilValue:
+		return VAL_NIL
+	case BoolValue:
+		return VAL_BOOL
+	case NumberValue:
+		return VAL_NUMBER
+	case ObjValue:
+		return VAL_OBJ
+	}
+	panic("unexpected value type")
 }
 
 func is_falsey(val Value) bool {
-	return has_type(val, VAL_NIL) || (has_type(val, VAL_BOOL) && !val.as_bool())
+	return is_nil(val) || (is_bool(val) && !bool(val.(BoolValue)))
 }
 
 func are_equal(val_1, val_2 Value) bool {
-	if val_1.get_type() != val_2.get_type() {
+	if get_type(val_1) != get_type(val_2) {
 		return false
 	}
 
-	switch val_1.get_type() {
+	switch val_1.(type) {
 
-	case VAL_BOOL:
-		return val_1.as_bool() == val_2.as_bool()
+	case BoolValue:
+		return val_1.(BoolValue) == val_2.(BoolValue)
 
-	case VAL_NIL:
+	case NilValue:
 		return true
 
-	case VAL_NUMBER:
-		return val_1.as_number() == val_2.as_number()
-	}
+	case NumberValue:
+		return val_1.(NumberValue) == val_2.(NumberValue)
 
-	return false // unreachable
+	case ObjValue:
+		var a = string(val_1.(ObjValue).ptr.data)
+		var b = string(val_2.(ObjValue).ptr.data)
+		return a == b
+	}
+	panic("unexpected value type")
+}
+
+func is_nil(val Value) bool {
+	return get_type(val) == VAL_NIL
+}
+
+func is_number(val Value) bool {
+	return get_type(val) == VAL_NUMBER
+}
+
+func is_bool(val Value) bool {
+	return get_type(val) == VAL_BOOL
+}
+
+func is_obj(val Value) bool {
+	return get_type(val) == VAL_OBJ
 }
 
 type NilValue struct{}
 
-func (val NilValue) as_string() string {
+func (val NilValue) stringify() string {
 	return "nil"
-}
-
-func (val NilValue) as_number() NumberValue {
-	return 0
-}
-
-func (val NilValue) as_bool() bool {
-	return false
-}
-
-func (val NilValue) get_type() int {
-	return VAL_NIL
 }
 
 type BoolValue bool
 
-func (val BoolValue) as_string() string {
+func (val BoolValue) stringify() string {
 	return fmt.Sprintf("%t", val)
-}
-
-func (val BoolValue) as_number() NumberValue {
-	return if_then_else[NumberValue](bool(val), 1, 0)
-}
-
-func (val BoolValue) as_bool() bool {
-	return bool(val)
-}
-
-func (val BoolValue) get_type() int {
-	return VAL_BOOL
 }
 
 type NumberValue float64
 
-func (val NumberValue) as_string() string {
+func (val NumberValue) stringify() string {
 	return fmt.Sprintf("%g", val)
 }
 
-func (val NumberValue) as_number() NumberValue {
-	return val
+type ObjValue struct {
+	ptr *Obj
 }
 
-func (val NumberValue) as_bool() bool {
-	return val != 0
-}
-
-func (val NumberValue) get_type() int {
-	return VAL_NUMBER
+func (val ObjValue) stringify() string {
+	return val.ptr.stringify()
 }

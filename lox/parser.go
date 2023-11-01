@@ -76,9 +76,17 @@ func (parser *Parser) parse_literal() {
 func (parser *Parser) parse_number() {
 	var value, err = strconv.ParseFloat(parser.prev_token.lexeme, 64)
 	if err != nil {
-		parser.report_error(err.Error())
+		panic(err.Error())
 	}
 	parser.emit_constant(NumberValue(value))
+}
+
+func (parser *Parser) parse_string() {
+	var end = len(parser.prev_token.lexeme) - 1
+	var str = parser.prev_token.lexeme[1:end]
+	var obj = Obj{spec: OBJ_STRING, data: []byte(str)}
+	var val = ObjValue{ptr: &obj}
+	parser.emit_constant(val)
 }
 
 func (parser *Parser) parse_grouping() {
@@ -89,7 +97,6 @@ func (parser *Parser) parse_grouping() {
 func (parser *Parser) parse_unary() {
 
 	var operator_spec = parser.prev_token.spec
-
 	parser.parse_precedence(PREC_UNARY)
 
 	switch operator_spec {
@@ -98,7 +105,7 @@ func (parser *Parser) parse_unary() {
 	case TOKEN_MINUS:
 		parser.emit_byte(OP_NEGATE)
 	default:
-		return // unreachable
+		panic("unexpected operator spec")
 	}
 }
 
@@ -135,7 +142,7 @@ func (parser *Parser) parse_binary() {
 		parser.emit_byte(OP_GREATER, OP_NOT)
 
 	default:
-		//unreachable
+		panic("unexpected operator spec")
 	}
 
 }

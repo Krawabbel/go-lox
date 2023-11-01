@@ -83,10 +83,8 @@ func disassemble_instruction(chunk *Chunk, addr int) (string, int) {
 	case OP_LESS:
 		var dasm, offset = disassemble_simple_instruction("OP_LESS")
 		return info + dasm, offset
-
-	default:
-		return info + fmt.Sprintf("unknown opcode %d", instr), 1
 	}
+	panic("unknown opcode")
 }
 
 func disassemble_simple_instruction(name string) (string, int) {
@@ -97,5 +95,5 @@ func disassemble_constant_instruction(name string, chunk *Chunk, code_addr int) 
 	var addr = chunk.code[code_addr]
 	var val = chunk.constants[addr]
 
-	return fmt.Sprintf("%-16s (%04d) %s", name, addr, val.as_string()), 2
+	return fmt.Sprintf("%-16s (%04d) %s", name, addr, val.stringify()), 2
 }

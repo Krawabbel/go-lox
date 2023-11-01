@@ -26,9 +26,23 @@ func TestREPL(t *testing.T) {
 		{"1<2", "true"},
 		{"1<=2", "true"},
 		{"1>2", "false"},
+		{"1>=1", "true"},
+		{"1!=1", "false"},
 		{"1==nil", "false"},
 		{"nil==nil", "true"},
+		{"\"ab\"==\"ab\"", "true"},
 		{"!(5 - 4 > 3 * 2 == !nil)", "true"},
+		{"false == !true", "true"},
+		{"-1/5", "-0.2"},
+		{"\"st\" + \"ri\" + \"ng\"", "string"},
+
+		{"\"", "[line 1] error: unterminated string"},
+		{"-true", "operand must be a number\n[line 1] in script"},
+		{"\"a\"+1", "operands must be two numbers or two strings\n[line 1] in script"},
+		{"nil*1", "operands must be two numbers\n[line 1] in script"},
+		{"\"a\"/true", "operands must be two numbers\n[line 1] in script"},
+		{"false-1", "operands must be two numbers\n[line 1] in script"},
+		{"// comment", "[line 1] error at end: expect expression"},
 	}
 
 	var src = ""
@@ -45,6 +59,29 @@ func TestREPL(t *testing.T) {
 	}
 
 	var have = string(w.data)
+
+	if have != want {
+		t.Fatalf("run repl(): have = %s, want = %s", have, want)
+	}
+}
+
+func TestREPL_Exit(t *testing.T) {
+
+	var w = new(test_writer)
+	lox.STDOUT = w
+	lox.STDERR = w
+
+	var given = "exit"
+
+	lox.STDIN = strings.NewReader(given)
+
+	if err := lox.RunREPL(); err != nil {
+		t.Fatal(err)
+	}
+
+	var have = string(w.data)
+
+	var want = "> "
 
 	if have != want {
 		t.Fatalf("run repl(): have = %s, want = %s", have, want)

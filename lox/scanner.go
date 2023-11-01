@@ -122,7 +122,7 @@ func (scanner *Scanner) skip_whitespace() {
 			scanner.advance()
 		case '/':
 			if scanner.peek_next() == '/' {
-				for scanner.peek_curr() != '\n' && !scanner.eof() {
+				for !scanner.eof() && scanner.peek_curr() != '\n' {
 					scanner.advance()
 				}
 			} else {

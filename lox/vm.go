@@ -49,7 +49,23 @@ func (vm *VM) run() int {
 		switch instr {
 
 		case OP_ADD:
-			if !vm.execute_binary(func(a, b NumberValue) Value { return a + b }) {
+
+			switch {
+
+			case is_string(vm.stack.peek(0)) && is_string(vm.stack.peek(1)):
+				var b = string(vm.stack.pop().(ObjValue).ptr.data)
+				var a = string(vm.stack.pop().(ObjValue).ptr.data)
+				var obj = Obj{spec: OBJ_STRING, data: []byte(a + b)}
+				var val = ObjValue{ptr: &obj}
+				vm.stack.push(val)
+
+			case is_number(vm.stack.peek(0)) && is_number(vm.stack.peek(1)):
+				var b = vm.stack.pop().(NumberValue)
+				var a = vm.stack.pop().(NumberValue)
+				vm.stack.push(a + b)
+
+			default:
+				vm.report_runtime_error("operands must be two numbers or two strings")
 				return INTERPRET_RUNTIME_ERROR
 			}
 
@@ -72,11 +88,11 @@ func (vm *VM) run() int {
 			vm.stack.push(BoolValue(is_falsey(vm.stack.pop())))
 
 		case OP_NEGATE:
-			if !has_type(vm.stack.peek(0), VAL_NUMBER) {
+			if !is_number(vm.stack.peek(0)) {
 				vm.report_runtime_error("operand must be a number")
 				return INTERPRET_RUNTIME_ERROR
 			}
-			vm.stack.push(-vm.stack.pop().as_number())
+			vm.stack.push(-vm.stack.pop().(NumberValue))
 
 		case OP_CONSTANT:
 			var constant = vm.next_constant()
@@ -102,11 +118,11 @@ func (vm *VM) run() int {
 
 		case OP_RETURN:
 			var val = vm.stack.pop()
-			fmt.Fprintln(STDOUT, val.as_string())
+			fmt.Fprintln(STDOUT, val.stringify())
 			return INTERPRET_OK
 
 		default:
-			return INTERPRET_RUNTIME_ERROR
+			panic("unexpected opcode")
 		}
 	}
 }
@@ -117,20 +133,20 @@ func (vm *VM) report_runtime_error(format string, a ...any) {
 	var instr = vm.ip - 1
 	var line = vm.chunk.lines[instr]
 
-	fmt.Fprintf(STDERR, "\n[line %d] in script", line)
+	fmt.Fprintf(STDERR, "\n[line %d] in script\n", line)
 
 	vm.stack.reset()
 }
 
 func (vm *VM) execute_binary(f func(a, b NumberValue) Value) (success bool) {
 
-	if !has_type(vm.stack.peek(0), VAL_NUMBER) || !has_type(vm.stack.peek(1), VAL_NUMBER) {
-		vm.report_runtime_error("operands must be numbers")
+	if !is_number(vm.stack.peek(0)) || !is_number(vm.stack.peek(1)) {
+		vm.report_runtime_error("operands must be two numbers")
 		return false
 	}
 
-	var b = vm.stack.pop().as_number()
-	var a = vm.stack.pop().as_number()
+	var b = vm.stack.pop().(NumberValue)
+	var a = vm.stack.pop().(NumberValue)
 
 	var res = f(a, b)
 
