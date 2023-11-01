@@ -42,6 +42,7 @@ func TestREPL(t *testing.T) {
 		{"nil*1", "operands must be two numbers\n[line 1] in script"},
 		{"\"a\"/true", "operands must be two numbers\n[line 1] in script"},
 		{"false-1", "operands must be two numbers\n[line 1] in script"},
+		{"~", "[line 1] error: unexpected character"},
 		{"// comment", "[line 1] error at end: expect expression"},
 	}
 
@@ -61,7 +62,7 @@ func TestREPL(t *testing.T) {
 	var have = string(w.data)
 
 	if have != want {
-		t.Fatalf("run repl(): have = %s, want = %s", have, want)
+		t.Fatalf("run repl(): want = %s, have = %s", want, have)
 	}
 }
 
