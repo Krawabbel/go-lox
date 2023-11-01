@@ -41,6 +41,6 @@ jobs:
       with:
         report: true
         chart: true
-        amend: true
+        # amend: true
         reuse-go: true
     
