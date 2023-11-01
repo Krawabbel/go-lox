@@ -1,39 +1,52 @@
 package lox
 
-import "fmt"
+import (
+	"strings"
+)
 
-type Stack[T any] struct {
-	data []T
+type Stack struct {
+	data []Value
 	ptr  int
 }
 
-func (stack *Stack[T]) Push(t T) {
+func (stack *Stack) push(val Value) {
 
 	if stack.data == nil {
-		stack.data = make([]T, 0)
+		stack.data = make([]Value, 0, 1)
 	}
 
 	if stack.ptr == len(stack.data) {
-		stack.data = append(stack.data, t)
+		stack.data = append(stack.data, val)
 	} else {
-		stack.data[stack.ptr] = t
+		stack.data[stack.ptr] = val
 	}
 
 	stack.ptr++
 }
 
-func (stack *Stack[T]) Pop() (t T, err error) {
+func (stack *Stack) pop() Value {
 	if len(stack.data) == 0 {
-		return t, fmt.Errorf("cannot pop from empty stack")
+		return NilValue{}
 	}
 	stack.ptr--
-	return stack.data[stack.ptr], nil
+	return stack.data[stack.ptr]
 }
 
-func (stack *Stack[T]) Reset() {
+func (stack *Stack) reset() {
 	stack.ptr = 0
 }
 
-func (stack Stack[T]) Dump() string {
-	return fmt.Sprintf("%v", stack.data[:stack.ptr])
+func (stack Stack) peek(pos int) Value {
+	if stack.ptr-1-pos < 0 {
+		return NilValue{}
+	}
+	return stack.data[stack.ptr-1-pos]
+}
+
+func (stack Stack) dump() string {
+	var dumps = make([]string, stack.ptr)
+	for i := range dumps {
+		dumps[i] = stack.peek(i).as_string()
+	}
+	return "[" + strings.Join(dumps, ", ") + "]"
 }

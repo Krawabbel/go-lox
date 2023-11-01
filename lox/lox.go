@@ -11,14 +11,19 @@ func RunREPL() error {
 	var input = bufio.NewScanner(STDIN)
 
 	var vm = new(VM)
-	for print("> "); input.Scan(); print("> ") {
+	for fmt.Fprintf(STDOUT, "> "); input.Scan(); fmt.Fprintf(STDOUT, "> ") {
 
 		var line = input.Text()
-		if line == "exit" {
-			break
+		switch line {
+		case "exit":
+			return nil
+		case "":
+			// do nothing
+		default:
+			vm.interpret(line)
 		}
-		vm.interpret(line)
 	}
+
 	return nil
 }
 

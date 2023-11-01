@@ -1,5 +1,7 @@
 package lox
 
+import "fmt"
+
 func compile(src string) (*Chunk, bool) {
 
 	var parser Parser
@@ -18,9 +20,9 @@ func compile(src string) (*Chunk, bool) {
 	parser.end_compiler()
 
 	if DEBUG_PRINT_CODE && !parser.had_error {
-		disassemble_chunk(*parser.current_chunk(), "code")
+		fmt.Fprintln(STDDBG, disassemble_chunk(parser.current_chunk(), "code"))
 	}
 
-	return nil, !parser.had_error
+	return parser.current_chunk(), !parser.had_error
 
 }

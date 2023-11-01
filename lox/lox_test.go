@@ -12,6 +12,26 @@ import (
 	"github.com/Krawabbel/go-lox/lox"
 )
 
+func TestREPL(t *testing.T) {
+
+	var w = new(test_writer)
+	lox.STDOUT = w
+	lox.STDERR = w
+
+	lox.STDIN = strings.NewReader("1+2\n")
+
+	if err := lox.RunREPL(); err != nil {
+		t.Fatal(err)
+	}
+
+	var have = string(w.data)
+	var want = "> 3\n> "
+
+	if have != want {
+		t.Fatalf("run repl(): have = %s, want = %s", have, want)
+	}
+}
+
 func TestLox(t *testing.T) {
 
 	err := filepath.Walk("..",
@@ -29,7 +49,7 @@ func TestLox(t *testing.T) {
 
 			if is_lox_file {
 
-				if err := test_helper(path, info); err != nil {
+				if err := test_script_helper(path, info); err != nil {
 					t.Error(err)
 				}
 
@@ -44,7 +64,7 @@ func TestLox(t *testing.T) {
 
 }
 
-func test_helper(path string, info os.FileInfo) error {
+func test_script_helper(path string, info os.FileInfo) error {
 
 	var w = new(test_writer)
 	lox.STDOUT = w

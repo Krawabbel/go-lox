@@ -103,7 +103,13 @@ func (scanner *Scanner) match_byte(b byte) bool {
 	if scanner.eof() {
 		return false
 	}
-	return scanner.peek_curr() == b
+
+	if scanner.peek_curr() != b {
+		return false
+	}
+
+	scanner.advance()
+	return true
 }
 
 func (scanner *Scanner) skip_whitespace() {
