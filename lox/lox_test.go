@@ -18,14 +18,33 @@ func TestREPL(t *testing.T) {
 	lox.STDOUT = w
 	lox.STDERR = w
 
-	lox.STDIN = strings.NewReader("1+2\n")
+	var args = []struct {
+		given string
+		want  string
+	}{
+		{"1+2", "3"},
+		{"1<2", "true"},
+		{"1<=2", "true"},
+		{"1>2", "false"},
+		{"1==nil", "false"},
+		{"nil==nil", "true"},
+		{"!(5 - 4 > 3 * 2 == !nil)", "true"},
+	}
+
+	var src = ""
+	var want = "> "
+	for _, arg := range args {
+		src += arg.given + "\n"
+		want += arg.want + "\n> "
+	}
+
+	lox.STDIN = strings.NewReader(src)
 
 	if err := lox.RunREPL(); err != nil {
 		t.Fatal(err)
 	}
 
 	var have = string(w.data)
-	var want = "> 3\n> "
 
 	if have != want {
 		t.Fatalf("run repl(): have = %s, want = %s", have, want)
