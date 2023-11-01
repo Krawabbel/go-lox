@@ -1,1 +1,1 @@
-This directory contains some example Lox programs.
+This directory contains some example Lox programs. All of them are used for regression testing. To reset the regression test output, simply remove the corresponding ```.*_base```-file.

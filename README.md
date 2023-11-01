@@ -5,7 +5,7 @@ a byte-code Lox interpreter written in Go (Golang)
 
 [![Go Coverage](https://github.com/Krawabbel/go-lox/wiki/coverage.svg)](https://raw.githack.com/wiki/Krawabbel/go-lox/coverage.html)
 
-The Lox interpreter found in this repository is an adaptation of the bytecode VM (C-)implementation proposed by Robert Nystrom in his highly recommended book 'Crafting Interpreters'.
+The Lox interpreter found in this repository is an adaptation of the bytecode VM implementation in C proposed by Robert Nystrom in his highly recommended book 'Crafting Interpreters'.
 
 ## Build and Run
 
