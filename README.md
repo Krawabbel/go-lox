@@ -3,7 +3,7 @@ a Lox interpreter written in Go (Golang)
 
 [![Go](https://github.com/Krawabbel/go-lox/actions/workflows/go.yml/badge.svg)](https://github.com/Krawabbel/go-lox/actions/workflows/go.yml) [![Go Coverage](https://github.com/Krawabbel/go-lox/wiki/coverage.svg)](https://raw.githack.com/wiki/Krawabbel/go-lox/coverage.html)
 
-The Lox interpreter found in this repository is a Go adaptation of the bytecode VM-based interpreter implementation in C proposed by Robert Nystrom in his highly recommended book 'Crafting Interpreters'.
+The Lox interpreter found in this repository is an adaptation in Go of the bytecode VM-based interpreter implementation in C proposed by Robert Nystrom in his highly recommended book 'Crafting Interpreters'.
 
 ## Build and Run
 
