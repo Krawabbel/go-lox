@@ -20,8 +20,13 @@ func main() {
 
 		arg := os.Args[1]
 
-		if err := lox.RunScript(arg); err != nil {
-			panic(err)
+		switch arg {
+		case "reset":
+
+		default:
+			if err := lox.RunScript(arg); err != nil {
+				panic(err)
+			}
 		}
 
 	default:
