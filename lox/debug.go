@@ -56,6 +56,10 @@ func disassemble_instruction(chunk *Chunk, addr int) (string, int) {
 		var dasm, offset = disassemble_simple_instruction("OP_RETURN")
 		return info + dasm, offset
 
+	case OP_PRINT:
+		var dasm, offset = disassemble_simple_instruction("OP_PRINT")
+		return info + dasm, offset
+
 	case OP_CONSTANT:
 		var dasm, offset = disassemble_constant_instruction("OP_CONSTANT", chunk, addr+1)
 		return info + dasm, offset
@@ -70,6 +74,14 @@ func disassemble_instruction(chunk *Chunk, addr int) (string, int) {
 
 	case OP_FALSE:
 		var dasm, offset = disassemble_simple_instruction("OP_FALSE")
+		return info + dasm, offset
+
+	case OP_POP:
+		var dasm, offset = disassemble_simple_instruction("OP_POP")
+		return info + dasm, offset
+
+	case OP_DEFINE_GLOBAL:
+		var dasm, offset = disassemble_constant_instruction("OP_DEFINE_GLOBAL", chunk, addr+1)
 		return info + dasm, offset
 
 	case OP_EQUAL:

@@ -13,9 +13,9 @@ func compile(src string) (*Chunk, bool) {
 
 	parser.step()
 
-	parser.parse_expression()
-
-	parser.consume(TOKEN_EOF, "expected end of expression")
+	for !parser.match_token(TOKEN_EOF) {
+		parser.parse_declaration()
+	}
 
 	parser.end_compiler()
 

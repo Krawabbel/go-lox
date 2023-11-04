@@ -10,7 +10,8 @@ func RunREPL() error {
 
 	var input = bufio.NewScanner(STDIN)
 
-	var vm = new(VM)
+	var vm = newVM()
+
 	for fmt.Fprintf(STDOUT, "> "); input.Scan(); fmt.Fprintf(STDOUT, "> ") {
 
 		var line = input.Text()
@@ -34,7 +35,7 @@ func RunScript(path string) error {
 		return err
 	}
 
-	var vm = new(VM)
+	var vm = newVM()
 
 	var interpreter_result = vm.interpret(string(src))
 	switch interpreter_result {

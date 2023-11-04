@@ -5,7 +5,9 @@ a Lox interpreter written in Go (Golang)
 
 The Lox interpreter found in this repository is an adaptation in Go of the bytecode VM-based interpreter implementation in C proposed by Robert Nystrom in his highly recommended book 'Crafting Interpreters'.
 
-## Build and Run
+## Build
+
+Clone and build it like any other Go repository.
 
 * Clone the repository, e.g. with ```git clone https://github.com/Krawabbel/go-lox.git``` or simply download it [here](https://github.com/Krawabbel/go-lox/archive/refs/heads/main.zip).
 
@@ -23,11 +25,11 @@ If no path to a script is provided, the REPL will be started.
 
 ## Lox Cheat Sheet
 
-Lox is a minimalistic programming language in the tradition of C.
+Lox is a minimalistic programming language in the tradition of C:
+* All statements must be terminated by a ';'.
 
 Some notable peculiarities:
-* All statements must be terminated by a ';'.
-* All numbers are 32-bit floats.
+* All numbers are 64-bit floats.
 * All statements in if-else-clauses, for- and while-loops must be surrounded by curly braces ('{' and '}'). 
 
 ### Hello World

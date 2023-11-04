@@ -12,6 +12,14 @@ type VM struct {
 	chunk *Chunk
 	stack Stack
 	ip    int
+
+	globals map[string]Value
+}
+
+func newVM() *VM {
+	var vm = new(VM)
+	vm.globals = make(map[string]Value)
+	return vm
 }
 
 func (vm *VM) interpret(src string) int {
@@ -36,12 +44,17 @@ func (vm *VM) next_constant() Value {
 	return vm.chunk.constants[vm.next_code()]
 }
 
+func (vm *VM) next_string() string {
+	var constant = vm.next_constant()
+	return constant.(ObjValue).ptr.stringify()
+}
+
 func (vm *VM) run() int {
 	for {
 
 		if DEBUG_TRACE_EXECUTION {
 			dbg, _ := disassemble_instruction(vm.chunk, vm.ip)
-			fmt.Fprintf(STDDBG, "%-50s %s\n", dbg, vm.stack.dump())
+			fmt.Fprintf(STDDBG, "%-50s %s %s\n", dbg, vm.stack.dump(), vm.globals)
 		}
 
 		instr := vm.next_code()
@@ -105,6 +118,14 @@ func (vm *VM) run() int {
 		case OP_FALSE:
 			vm.stack.push(BoolValue(false))
 
+		case OP_POP:
+			_ = vm.stack.pop()
+
+		case OP_DEFINE_GLOBAL:
+			var name = vm.next_string()
+			vm.globals[name] = vm.stack.peek(0)
+			_ = vm.stack.pop()
+
 		case OP_EQUAL:
 			var b = vm.stack.pop()
 			var a = vm.stack.pop()
@@ -116,9 +137,11 @@ func (vm *VM) run() int {
 		case OP_LESS:
 			vm.execute_binary(func(a, b NumberValue) Value { return BoolValue(a < b) })
 
+		case OP_PRINT:
+			fmt.Fprintf(STDOUT, "%s\n", vm.stack.pop().stringify())
+
 		case OP_RETURN:
-			var val = vm.stack.pop()
-			fmt.Fprintln(STDOUT, val.stringify())
+			// exit interpreter
 			return INTERPRET_OK
 
 		default:

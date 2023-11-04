@@ -52,12 +52,84 @@ func (parser *Parser) consume(spec int, msg string) {
 	parser.report_error_at_current(msg)
 }
 
+func (parser *Parser) match_token(spec int) bool {
+	if !parser.check_token(spec) {
+		return false
+	}
+	parser.step()
+	return true
+}
+
+func (parser *Parser) check_token(spec int) bool {
+	return parser.curr_token.spec == spec
+}
+
 func (parser *Parser) end_compiler() {
 	parser.emit_return()
 }
 
 func (parser *Parser) parse_expression() {
 	parser.parse_precedence(PREC_ASSIGNMENT)
+}
+func (parser *Parser) parse_declaration() {
+	if parser.match_token(TOKEN_VAR) {
+		parser.parse_var_declaration()
+	} else {
+		parser.parse_statement()
+	}
+
+	if parser.is_in_panic_mode {
+		parser.synchronize()
+	}
+}
+
+func (parser *Parser) parse_var_declaration() {
+	var global = parser.parse_variable("expect variable name")
+
+	if parser.match_token(TOKEN_EQUAL) {
+		parser.parse_expression()
+	} else {
+		parser.emit_byte(OP_NIL)
+	}
+	parser.consume(TOKEN_SEMICOLON, "expect \";\" after variable declaration")
+
+	parser.define_variable(global)
+}
+
+func (parser *Parser) parse_statement() {
+	if parser.match_token(TOKEN_PRINT) {
+		parser.print_statement()
+	} else {
+		parser.parse_expression_statement()
+	}
+}
+
+func (parser *Parser) synchronize() {
+	parser.is_in_panic_mode = false
+	for parser.curr_token.spec != TOKEN_EOF {
+		if parser.prev_token.spec == TOKEN_SEMICOLON {
+			return
+		}
+		switch parser.curr_token.spec {
+		case TOKEN_CLASS, TOKEN_FUN, TOKEN_VAR, TOKEN_FOR, TOKEN_IF, TOKEN_WHILE, TOKEN_PRINT, TOKEN_RETURN:
+			return
+		default:
+			// do nothing
+		}
+		parser.step()
+	}
+}
+
+func (parser *Parser) parse_expression_statement() {
+	parser.parse_expression()
+	parser.consume(TOKEN_SEMICOLON, "expect \";\" after expression")
+	parser.emit_byte(OP_POP)
+}
+
+func (parser *Parser) print_statement() {
+	parser.parse_expression()
+	parser.consume(TOKEN_SEMICOLON, "expected \";\" after value")
+	parser.emit_byte(OP_PRINT)
 }
 
 func (parser *Parser) parse_literal() {
@@ -168,6 +240,21 @@ func (parser *Parser) parse_precedence(prec int) {
 		var _, infix_rule, _ = get_rule(parser, parser.prev_token.spec)
 		infix_rule()
 	}
+}
+
+func (parser *Parser) make_identifier_constant(token Token) byte {
+	var obj = Obj{OBJ_STRING, []byte(token.lexeme)}
+	var val = ObjValue{ptr: &obj}
+	return parser.make_constant(val)
+}
+
+func (parser *Parser) parse_variable(err_msg string) byte {
+	parser.consume(TOKEN_IDENTIFIER, err_msg)
+	return parser.make_identifier_constant(parser.prev_token)
+}
+
+func (parser *Parser) define_variable(global byte) {
+	parser.emit_byte(OP_DEFINE_GLOBAL, global)
 }
 
 func (parser *Parser) emit_byte(bs ...byte) {
