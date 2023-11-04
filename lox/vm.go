@@ -54,7 +54,7 @@ func (vm *VM) run() int {
 
 		if DEBUG_TRACE_EXECUTION {
 			dbg, _ := disassemble_instruction(vm.chunk, vm.ip)
-			fmt.Fprintf(STDDBG, "%-50s %s %s\n", dbg, vm.stack.dump(), vm.globals)
+			fmt.Fprintf(STDDBG, "%-50s %s\n", dbg, vm.stack.dump())
 		}
 
 		instr := vm.next_code()

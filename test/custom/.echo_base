@@ -1,1 +1,5 @@
 [line 1] error at 'fun': expect expression
+[line 2] error at 'n': expect expression
+[line 3] error at 'return': expect expression
+[line 4] error at '}': expect expression
+[line 6] error at 'echo': expect expression

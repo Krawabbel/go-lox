@@ -1,0 +1,4 @@
+[line 1] error at 'fun': expect expression
+[line 2] error at 'global': expect expression
+[line 3] error at '}': expect expression
+[line 6] error at 'showVariable': expect expression
